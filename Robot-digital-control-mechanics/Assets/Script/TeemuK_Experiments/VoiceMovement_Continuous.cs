@@ -46,11 +46,17 @@ public class VoiceMovement_Continuous : MonoBehaviour {
 
         //Rotation
         actions.Add("RX Up", RX_Up);
+        actions.Add("Rotate left", RX_Up); //Alternative
         actions.Add("RX Down", RX_Down);
+        actions.Add("Rotate right", RX_Down); //Alternative
         actions.Add("RY Up", RY_Up);
+        actions.Add("Rotate Up", RY_Up); //Alternative
         actions.Add("RY Down", RY_Down);
+        actions.Add("Rotate Down", RY_Down); //Alternative
         actions.Add("RZ Up", RZ_Up);
+        actions.Add("Rotate Z left", RZ_Up); //Alternative
         actions.Add("RZ Down", RZ_Down);
+        actions.Add("Rotate Z right", RZ_Down); //Alternative
 
         actions.Add("Stop", StopMove);
 
