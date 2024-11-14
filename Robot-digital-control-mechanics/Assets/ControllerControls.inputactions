@@ -1,0 +1,94 @@
+{
+    "name": "ControllerControls",
+    "maps": [
+        {
+            "name": "Controller",
+            "id": "8b178218-db84-459b-a160-841c43e94ea9",
+            "actions": [
+                {
+                    "name": "RightStick",
+                    "type": "Value",
+                    "id": "dbb85d2d-2645-4797-bde5-9110814e0751",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "LeftStick",
+                    "type": "Value",
+                    "id": "5046249f-418a-41b9-98a4-a042afcef600",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "RightTrigger",
+                    "type": "Value",
+                    "id": "ad796cfd-e6ae-453c-a1ea-b973d513c716",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "LeftTrigger",
+                    "type": "Value",
+                    "id": "59f62c5d-02e3-4188-95b3-31e3578dbe74",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "eb348a3a-bbff-42cc-8c9c-c0f2025aebec",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RightStick",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1f3d8cdd-b31a-471b-8fd3-a81ca6368d58",
+                    "path": "<Gamepad>/leftStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LeftStick",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "06375d5e-49be-4af2-af6d-5339f36cf58c",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RightTrigger",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "511204da-13ca-4ad5-b967-aef1fd61de82",
+                    "path": "<Gamepad>/leftTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LeftTrigger",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
