@@ -62,6 +62,15 @@ public partial class @ControllerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Connection"",
+                    ""type"": ""Button"",
+                    ""id"": ""3183ce1b-f46e-456c-bde0-9408a5017be2"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -108,6 +117,17 @@ public partial class @ControllerControls: IInputActionCollection2, IDisposable
                     ""action"": ""LeftTrigger"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4512fe85-04d2-4b91-9976-a86052efe082"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Connection"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -120,6 +140,7 @@ public partial class @ControllerControls: IInputActionCollection2, IDisposable
         m_Controller_LeftStick = m_Controller.FindAction("LeftStick", throwIfNotFound: true);
         m_Controller_RightTrigger = m_Controller.FindAction("RightTrigger", throwIfNotFound: true);
         m_Controller_LeftTrigger = m_Controller.FindAction("LeftTrigger", throwIfNotFound: true);
+        m_Controller_Connection = m_Controller.FindAction("Connection", throwIfNotFound: true);
     }
 
     ~@ControllerControls()
@@ -190,6 +211,7 @@ public partial class @ControllerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Controller_LeftStick;
     private readonly InputAction m_Controller_RightTrigger;
     private readonly InputAction m_Controller_LeftTrigger;
+    private readonly InputAction m_Controller_Connection;
     public struct ControllerActions
     {
         private @ControllerControls m_Wrapper;
@@ -198,6 +220,7 @@ public partial class @ControllerControls: IInputActionCollection2, IDisposable
         public InputAction @LeftStick => m_Wrapper.m_Controller_LeftStick;
         public InputAction @RightTrigger => m_Wrapper.m_Controller_RightTrigger;
         public InputAction @LeftTrigger => m_Wrapper.m_Controller_LeftTrigger;
+        public InputAction @Connection => m_Wrapper.m_Controller_Connection;
         public InputActionMap Get() { return m_Wrapper.m_Controller; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -219,6 +242,9 @@ public partial class @ControllerControls: IInputActionCollection2, IDisposable
             @LeftTrigger.started += instance.OnLeftTrigger;
             @LeftTrigger.performed += instance.OnLeftTrigger;
             @LeftTrigger.canceled += instance.OnLeftTrigger;
+            @Connection.started += instance.OnConnection;
+            @Connection.performed += instance.OnConnection;
+            @Connection.canceled += instance.OnConnection;
         }
 
         private void UnregisterCallbacks(IControllerActions instance)
@@ -235,6 +261,9 @@ public partial class @ControllerControls: IInputActionCollection2, IDisposable
             @LeftTrigger.started -= instance.OnLeftTrigger;
             @LeftTrigger.performed -= instance.OnLeftTrigger;
             @LeftTrigger.canceled -= instance.OnLeftTrigger;
+            @Connection.started -= instance.OnConnection;
+            @Connection.performed -= instance.OnConnection;
+            @Connection.canceled -= instance.OnConnection;
         }
 
         public void RemoveCallbacks(IControllerActions instance)
@@ -258,5 +287,6 @@ public partial class @ControllerControls: IInputActionCollection2, IDisposable
         void OnLeftStick(InputAction.CallbackContext context);
         void OnRightTrigger(InputAction.CallbackContext context);
         void OnLeftTrigger(InputAction.CallbackContext context);
+        void OnConnection(InputAction.CallbackContext context);
     }
 }

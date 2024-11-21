@@ -20,84 +20,97 @@ public class SliderController : MonoBehaviour
     public TMP_Text rySliderText;
     public TMP_Text rzSliderText;
 
+    // Reference to Robot Connection Buttons
+    public Button connectButton;
+    public Button disconnectButton;
+
     // ControllerControls reference (generated class from Input Actions asset)
     private ControllerControls controls;
 
     // Input values
-    private Vector2 rightStickInput;
-    private Vector2 leftStickInput;  // For left thumbstick input
-    private float leftTriggerInput;
-    private float rightTriggerInput;
+    private Vector2 rightStickInput = Vector2.zero;
+    private Vector2 leftStickInput = Vector2.zero;
+    private float leftTriggerInput = 0f;
+    private float rightTriggerInput = 0f;
 
     // Slider speed
-    public float sliderSpeed = 1.0f;
+    public float sliderSpeed = 5.0f;
+
+    // Connection state
+    private bool isConnected = false;
 
     private void Awake()
     {
         // Initialize input actions
         controls = new ControllerControls();
 
-        // Bind actions
+        // Bind actions for input
         controls.Controller.RightStick.performed += ctx => rightStickInput = ctx.ReadValue<Vector2>();
-        controls.Controller.LeftStick.performed += ctx => leftStickInput = ctx.ReadValue<Vector2>();  // Bind the left thumbstick input
+        controls.Controller.RightStick.canceled += ctx => rightStickInput = Vector2.zero;
+
+        controls.Controller.LeftStick.performed += ctx => leftStickInput = ctx.ReadValue<Vector2>();
+        controls.Controller.LeftStick.canceled += ctx => leftStickInput = Vector2.zero;
+
         controls.Controller.LeftTrigger.performed += ctx => leftTriggerInput = ctx.ReadValue<float>();
+        controls.Controller.LeftTrigger.canceled += ctx => leftTriggerInput = 0f;
+
         controls.Controller.RightTrigger.performed += ctx => rightTriggerInput = ctx.ReadValue<float>();
+        controls.Controller.RightTrigger.canceled += ctx => rightTriggerInput = 0f;
+
+        // Bind "Connection" button action
+        controls.Controller.Connection.performed += ctx => ToggleRobotConnection();
     }
 
     private void OnEnable()
     {
-        // Enable the controls when the game starts
         controls.Enable();
     }
 
     private void OnDisable()
     {
-        // Disable the controls when the game is paused or stops
         controls.Disable();
     }
 
     private void Update()
     {
-        // Stop Y movement when the left trigger is pressed
-        if (leftTriggerInput > 0.1f)
+        // Control X and Y sliders only when the left trigger is NOT pressed
+        if (leftTriggerInput <= 0.1f)
         {
-            // Left trigger pressed, so no movement for the Y slider
-            ySlider.value += 0; // No change in Y slider
-        }
-        else if (leftStickInput != Vector2.zero) // Only update if there's input on the left stick
-        {
-            // Left trigger not pressed, Y slider responds to left thumbstick's horizontal movement
-            ySlider.value += leftStickInput.x * sliderSpeed * Time.deltaTime;
+            if (Mathf.Abs(leftStickInput.y) > 0.1f)
+            {
+                ySlider.value += leftStickInput.y * sliderSpeed * Time.deltaTime; // Up and down controls Y slider
+            }
+
+            if (Mathf.Abs(leftStickInput.x) > 0.1f)
+            {
+                xSlider.value += leftStickInput.x * sliderSpeed * Time.deltaTime; // Left and right controls X slider
+            }
         }
 
-        // Move X slider only when left thumbstick has input (horizontal movement)
-        if (leftTriggerInput <= 0.1f && leftStickInput.x != 0) // Only update if there's input
+        // Control Z slider only when the left trigger is pressed
+        if (leftTriggerInput > 0.1f && Mathf.Abs(leftStickInput.y) > 0.1f)
         {
-            xSlider.value += leftStickInput.y * sliderSpeed * Time.deltaTime; // Vertical movement of left stick controls X slider
+            zSlider.value += leftStickInput.y * sliderSpeed * Time.deltaTime; // Z slider responds to vertical movement
         }
 
-        // Move Z slider when left trigger is pressed and left stick moves vertically
-        if (leftTriggerInput > 0.1f && leftStickInput.y != 0) // Only update if there's input
+        // Control RX and RY sliders only when the right trigger is NOT pressed
+        if (rightTriggerInput <= 0.1f)
         {
-            zSlider.value += leftStickInput.y * sliderSpeed * Time.deltaTime;
+            if (Mathf.Abs(rightStickInput.y) > 0.1f)
+            {
+                rySlider.value += rightStickInput.y * sliderSpeed * Time.deltaTime; // Up and down controls RY slider
+            }
+
+            if (Mathf.Abs(rightStickInput.x) > 0.1f)
+            {
+                rxSlider.value += rightStickInput.x * sliderSpeed * Time.deltaTime; // Left and right controls RX slider
+            }
         }
 
-        // Move RY slider unless right trigger is pressed
-        if (rightTriggerInput <= 0.1f && rightStickInput != Vector2.zero) // Only move RY if right trigger is NOT pressed and there's input
+        // Control RZ slider only when the right trigger is pressed
+        if (rightTriggerInput > 0.1f && Mathf.Abs(rightStickInput.y) > 0.1f)
         {
-            rySlider.value += rightStickInput.y * sliderSpeed * Time.deltaTime;
-        }
-
-        // Move RX slider only if the right trigger is NOT pressed (meaning RZ is not being controlled)
-        if (rightTriggerInput <= 0.1f && rightStickInput.x != 0) // Only update RX if right trigger is NOT pressed
-        {
-            rxSlider.value += rightStickInput.x * sliderSpeed * Time.deltaTime;
-        }
-
-        // Move RZ slider when right trigger is pressed
-        if (rightTriggerInput > 0.1f && rightStickInput.x != 0) // Only update RZ if right trigger is pressed and there's input
-        {
-            rzSlider.value += rightStickInput.x * sliderSpeed * Time.deltaTime;
+            rzSlider.value += rightStickInput.y * sliderSpeed * Time.deltaTime; // RZ slider responds to vertical movement
         }
 
         // Update TextMeshPro text fields to show current slider values
@@ -107,5 +120,30 @@ public class SliderController : MonoBehaviour
         rxSliderText.text = rxSlider.value.ToString("F2");
         rySliderText.text = rySlider.value.ToString("F2");
         rzSliderText.text = rzSlider.value.ToString("F2");
+    }
+
+    // Toggle the robot connection
+    private void ToggleRobotConnection()
+    {
+        if (connectButton == null || disconnectButton == null)
+        {
+            Debug.LogWarning("Connect or Disconnect button references are not set!");
+            return;
+        }
+
+        if (isConnected)
+        {
+            // Perform disconnect action
+            Debug.Log("Disconnecting robot...");
+            disconnectButton.onClick.Invoke(); // Trigger the Disconnect button's onClick
+            isConnected = false;
+        }
+        else
+        {
+            // Perform connect action
+            Debug.Log("Connecting robot...");
+            connectButton.onClick.Invoke(); // Trigger the Connect button's onClick
+            isConnected = true;
+        }
     }
 }

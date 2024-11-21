@@ -12140,6 +12140,8 @@ MonoBehaviour:
   rxSliderText: {fileID: 450111336}
   rySliderText: {fileID: 1894168492}
   rzSliderText: {fileID: 1569429570}
+  connectButton: {fileID: 8793931639062037883}
+  disconnectButton: {fileID: 1573928018}
   sliderSpeed: 10
 --- !u!23 &2707975463512473552
 MeshRenderer:
