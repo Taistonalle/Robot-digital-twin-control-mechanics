@@ -21,11 +21,13 @@ public class HandLandmarkLogger : MonoBehaviour
             // Check if the child object is active before processing
             if (child.gameObject.activeSelf)
             {
-                // Log local position
-                Debug.Log($"Index {i}: Local Position {child.localPosition}");
+                // Log local position with axis details
+                Vector3 localPosition = child.localPosition;
+                Debug.Log($"Index {i}: Local Position X = {localPosition.x}, Y = {localPosition.y}, Z = {localPosition.z}");
 
-                // Optionally log world position for comparison
-                Debug.Log($"Index {i}: World Position {child.position}");
+                // Optionally log world position for comparison (commented out)
+                // Vector3 worldPosition = child.position;
+                // Debug.Log($"Index {i}: World Position X = {worldPosition.x}, Y = {worldPosition.y}, Z = {worldPosition.z}");
             }
             else
             {
