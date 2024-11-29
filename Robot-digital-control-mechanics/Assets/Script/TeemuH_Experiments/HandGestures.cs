@@ -1,97 +1,101 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Windows.Speech;
-using System.Linq;  // <-- Add this line
+using System.Collections;
 
-public class HHandGestures : MonoBehaviour
+public class HandGestures: MonoBehaviour
 {
-    private KeywordRecognizer keywordRecognizer;
-    private Dictionary<string, Action> actions = new Dictionary<string, Action>();
-
     bool stopped = true;
 
+    [Header("Values")]
+    [SerializeField][Range(0.1f, 5f)] float moveAmount;
+    [SerializeField][Range(0.1f, 1f)] float loopWaitTime;
+
     [Header("Sliders")]
-    [SerializeField] Slider Z_pos_slider;
+    [SerializeField] Slider X_pos_slider;
 
-    [Header("Settings")]
-    [SerializeField] private string parentObjectName = "Point List Annotation";
-    [SerializeField] private int landmarkIndex = 0;
-    [SerializeField][Range(0.1f, 5f)] float moveAmount = 0.1f;
-    [SerializeField][Range(0.1f, 1f)] float loopWaitTime = 0.1f;
-
-    private GameObject parentObject;
-
-    void Start()
-    {
-        // Initialize speech recognition actions
-        actions.Add("Start Movement", StartMovement);
-        actions.Add("Stop Movement", StopMovement);
-
-        keywordRecognizer = new KeywordRecognizer(actions.Keys.ToArray());  // This line uses ToArray()
-        keywordRecognizer.OnPhraseRecognized += RecognizedSpeech;
-        keywordRecognizer.Start();
-        Debug.Log("Listening for voice commands.");
-
-        parentObject = GameObject.Find(parentObjectName);
-
-        if (parentObject == null)
-        {
-            Debug.LogError($"Parent object '{parentObjectName}' not found!");
-            return;
-        }
-
-        if (parentObject.transform.childCount <= landmarkIndex)
-        {
-            Debug.LogError($"Landmark index {landmarkIndex} is out of range!");
-        }
-    }
-
-    void RecognizedSpeech(PhraseRecognizedEventArgs speech)
-    {
-        Debug.Log(speech.text);
-        actions[speech.text].Invoke();
-    }
-
-    void StartMovement()
-    {
-        stopped = false;
-        StartCoroutine(UpdateZPosition());
-    }
-
-    void StopMovement()
-    {
-        stopped = true;
-        Debug.Log("Movement stopped.");
-    }
-
-    IEnumerator UpdateZPosition()
-    {
-        while (!stopped)
-        {
-            if (parentObject != null && parentObject.transform.childCount > landmarkIndex)
-            {
-                Transform child = parentObject.transform.GetChild(landmarkIndex);
-                float zPosition = child.localPosition.z;
-
-                Z_pos_slider.value = Mathf.MoveTowards(Z_pos_slider.value, zPosition, moveAmount * Time.deltaTime);
-
-                Debug.Log($"Hand Landmark Z: {zPosition}, Slider Value: {Z_pos_slider.value}");
-
-                yield return new WaitForSeconds(loopWaitTime);
-            }
-            else
-            {
-                Debug.LogError($"Landmark index {landmarkIndex} not found or invalid.");
-                yield break;
-            }
-        }
-    }
+    private float previousZ = 0f; // Store the Z value of index 0 from the previous frame
 
     void Update()
     {
-        // Other updates can be added here.
+        // Find the parent object that contains the point annotations
+        GameObject parentObject = GameObject.Find("Point List Annotation");
+
+        if (parentObject == null)
+        {
+            Debug.LogError("Parent object not found!");
+            return;
+        }
+
+        // Ensure index 0 exists
+        if (parentObject.transform.childCount == 0)
+        {
+            Debug.LogError("No landmarks found!");
+            return;
+        }
+
+        Transform landmark0 = parentObject.transform.GetChild(0);
+
+        if (landmark0.gameObject.activeSelf)
+        {
+            Vector3 localPosition = landmark0.localPosition;
+            Debug.Log($"Index 0: Local Position X = {localPosition.x}, Y = {localPosition.y}, Z = {localPosition.z}");
+
+            // Check if Z value is increasing or decreasing
+            if (localPosition.z > previousZ)
+            {
+                if (!stopped) StopRoutine();
+                X_Up(); // Trigger X_Up function
+            }
+            else if (localPosition.z < previousZ)
+            {
+                if (!stopped) StopRoutine();
+                X_Down(); // Trigger X_Down function
+            }
+
+            // Update previousZ for the next frame
+            previousZ = localPosition.z;
+        }
+        else
+        {
+            Debug.Log("Index 0 is inactive.");
+        }
+    }
+
+    // Trigger X_Up routine
+    void X_Up()
+    {
+        stopped = false;
+        StartCoroutine(X_Up_Routine());
+    }
+
+    // Trigger X_Down routine
+    void X_Down()
+    {
+        stopped = false;
+        StartCoroutine(X_Down_Routine());
+    }
+
+    IEnumerator X_Up_Routine()
+    {
+        while (!stopped)
+        {
+            X_pos_slider.value += moveAmount;
+            yield return new WaitForSeconds(loopWaitTime);
+        }
+    }
+
+    IEnumerator X_Down_Routine()
+    {
+        while (!stopped)
+        {
+            X_pos_slider.value -= moveAmount;
+            yield return new WaitForSeconds(loopWaitTime);
+        }
+    }
+
+    public void StopRoutine()
+    {
+        stopped = true;
+        StopAllCoroutines();
     }
 }
