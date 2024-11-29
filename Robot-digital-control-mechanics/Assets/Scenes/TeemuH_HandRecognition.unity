@@ -651,6 +651,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveAmount: 0.1
   loopWaitTime: 0.1
+  zThreshold: 0.001
+  zScaleFactor: 1000
   X_pos_slider: {fileID: 736008941}
 --- !u!1 &79037470
 GameObject:
