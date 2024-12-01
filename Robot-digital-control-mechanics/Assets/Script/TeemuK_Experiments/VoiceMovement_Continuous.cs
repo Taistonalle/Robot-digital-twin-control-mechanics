@@ -58,6 +58,10 @@ public class VoiceMovement_Continuous : MonoBehaviour {
         actions.Add("RZ Down", RZ_Down);
         actions.Add("Rotate Z right", RZ_Down); //Alternative
 
+        //Grab and detach for pick up task
+        actions.Add("Grab", FindAnyObjectByType<PIckUpTask>().AttachCube);
+        actions.Add("Drop", FindAnyObjectByType<PIckUpTask>().DetachCube);
+
         actions.Add("Stop", StopMove);
 
         keywordRecognizer = new KeywordRecognizer(actions.Keys.ToArray());
