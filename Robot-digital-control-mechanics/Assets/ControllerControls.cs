@@ -71,6 +71,15 @@ public partial class @ControllerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""PickUp"",
+                    ""type"": ""Button"",
+                    ""id"": ""ed5a6908-55f9-42ce-b154-ec1ed8d89111"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -121,11 +130,22 @@ public partial class @ControllerControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""4512fe85-04d2-4b91-9976-a86052efe082"",
-                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Connection"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""32637366-ce93-45a7-adb0-4b458eb86d6b"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PickUp"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -141,6 +161,7 @@ public partial class @ControllerControls: IInputActionCollection2, IDisposable
         m_Controller_RightTrigger = m_Controller.FindAction("RightTrigger", throwIfNotFound: true);
         m_Controller_LeftTrigger = m_Controller.FindAction("LeftTrigger", throwIfNotFound: true);
         m_Controller_Connection = m_Controller.FindAction("Connection", throwIfNotFound: true);
+        m_Controller_PickUp = m_Controller.FindAction("PickUp", throwIfNotFound: true);
     }
 
     ~@ControllerControls()
@@ -212,6 +233,7 @@ public partial class @ControllerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Controller_RightTrigger;
     private readonly InputAction m_Controller_LeftTrigger;
     private readonly InputAction m_Controller_Connection;
+    private readonly InputAction m_Controller_PickUp;
     public struct ControllerActions
     {
         private @ControllerControls m_Wrapper;
@@ -221,6 +243,7 @@ public partial class @ControllerControls: IInputActionCollection2, IDisposable
         public InputAction @RightTrigger => m_Wrapper.m_Controller_RightTrigger;
         public InputAction @LeftTrigger => m_Wrapper.m_Controller_LeftTrigger;
         public InputAction @Connection => m_Wrapper.m_Controller_Connection;
+        public InputAction @PickUp => m_Wrapper.m_Controller_PickUp;
         public InputActionMap Get() { return m_Wrapper.m_Controller; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -245,6 +268,9 @@ public partial class @ControllerControls: IInputActionCollection2, IDisposable
             @Connection.started += instance.OnConnection;
             @Connection.performed += instance.OnConnection;
             @Connection.canceled += instance.OnConnection;
+            @PickUp.started += instance.OnPickUp;
+            @PickUp.performed += instance.OnPickUp;
+            @PickUp.canceled += instance.OnPickUp;
         }
 
         private void UnregisterCallbacks(IControllerActions instance)
@@ -264,6 +290,9 @@ public partial class @ControllerControls: IInputActionCollection2, IDisposable
             @Connection.started -= instance.OnConnection;
             @Connection.performed -= instance.OnConnection;
             @Connection.canceled -= instance.OnConnection;
+            @PickUp.started -= instance.OnPickUp;
+            @PickUp.performed -= instance.OnPickUp;
+            @PickUp.canceled -= instance.OnPickUp;
         }
 
         public void RemoveCallbacks(IControllerActions instance)
@@ -288,5 +317,6 @@ public partial class @ControllerControls: IInputActionCollection2, IDisposable
         void OnRightTrigger(InputAction.CallbackContext context);
         void OnLeftTrigger(InputAction.CallbackContext context);
         void OnConnection(InputAction.CallbackContext context);
+        void OnPickUp(InputAction.CallbackContext context);
     }
 }

@@ -8,8 +8,8 @@ public class PIckUpTask : MonoBehaviour
     public GameObject cubeB;
     private Rigidbody cubeRigidbody;
     private float distanceToCubeB;
-    private bool isHoldingCube = false;
-    private bool canPickup = false;
+    public bool isHoldingCube = false;
+    public bool canPickup = false;
     private Vector3 collisionOffset;
     private Transform originalParent;
     public TMP_Text distanceText;
@@ -20,7 +20,7 @@ public class PIckUpTask : MonoBehaviour
     {
         cubeRigidbody = cubeA.GetComponent<Rigidbody>();
         originalParent = cubeA.transform.parent;
-        distanceText.text = "";  
+        distanceText.text = "";
         showDistance = false;
         if (toggleDistanceButton != null)
         {
@@ -104,7 +104,7 @@ public class PIckUpTask : MonoBehaviour
 
     private void ToggleDistanceText()
     {
-        showDistance = !showDistance; 
+        showDistance = !showDistance;
 
         if (showDistance)
         {

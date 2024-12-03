@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class SliderController : MonoBehaviour
+public class Controller_Controls : MonoBehaviour
 {
     // References to the X, Y, Z, RX, RY, and RZ sliders
     public Slider xSlider;
@@ -24,6 +24,9 @@ public class SliderController : MonoBehaviour
     public Button connectButton;
     public Button disconnectButton;
 
+    // Reference to the PIckUpTask script
+    public PIckUpTask pickUpTask;
+
     // ControllerControls reference (generated class from Input Actions asset)
     private ControllerControls controls;
 
@@ -34,7 +37,7 @@ public class SliderController : MonoBehaviour
     private float rightTriggerInput = 0f;
 
     // Slider speed
-    public float sliderSpeed = 5.0f;
+    public float sliderSpeed;
 
     // Connection state
     private bool isConnected = false;
@@ -56,6 +59,9 @@ public class SliderController : MonoBehaviour
 
         controls.Controller.RightTrigger.performed += ctx => rightTriggerInput = ctx.ReadValue<float>();
         controls.Controller.RightTrigger.canceled += ctx => rightTriggerInput = 0f;
+
+        // Bind "PickUp" button action
+        controls.Controller.PickUp.performed += ctx => HandlePickUpAction();
 
         // Bind "Connection" button action
         controls.Controller.Connection.performed += ctx => ToggleRobotConnection();
@@ -144,6 +150,26 @@ public class SliderController : MonoBehaviour
             Debug.Log("Connecting robot...");
             connectButton.onClick.Invoke(); // Trigger the Connect button's onClick
             isConnected = true;
+        }
+    }
+
+    // Handle the "PickUp" button action
+    private void HandlePickUpAction()
+    {
+        if (pickUpTask != null)
+        {
+            if (!pickUpTask.isHoldingCube && pickUpTask.canPickup)
+            {
+                pickUpTask.AttachCube();
+            }
+            else if (pickUpTask.isHoldingCube)
+            {
+                pickUpTask.DetachCube();
+            }
+        }
+        else
+        {
+            Debug.LogWarning("PickUpTask reference is not assigned in the SliderController!");
         }
     }
 }
