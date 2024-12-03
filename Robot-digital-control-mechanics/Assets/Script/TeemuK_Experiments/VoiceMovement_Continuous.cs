@@ -59,8 +59,16 @@ public class VoiceMovement_Continuous : MonoBehaviour {
         actions.Add("Rotate Z right", RZ_Down); //Alternative
 
         //Grab and detach for pick up task
-        actions.Add("Grab", FindAnyObjectByType<PIckUpTask>().AttachCube);
-        actions.Add("Drop", FindAnyObjectByType<PIckUpTask>().DetachCube);
+        try {
+            actions.Add("Grab", FindAnyObjectByType<PIckUpTask>().AttachCube);
+            actions.Add("Pick Up", FindAnyObjectByType<PIckUpTask>().AttachCube); //Alternative
+
+            actions.Add("Drop", FindAnyObjectByType<PIckUpTask>().DetachCube);
+            actions.Add("Detach", FindAnyObjectByType<PIckUpTask>().DetachCube); //Alternative
+        }
+        catch {
+            Debug.LogWarning("No PickUpTask in scene, continuing");
+        }
 
         actions.Add("Stop", StopMove);
 

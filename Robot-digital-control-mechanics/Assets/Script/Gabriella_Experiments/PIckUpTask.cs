@@ -68,6 +68,9 @@ public class PIckUpTask : MonoBehaviour
 
     public void AttachCube()
     {
+        //Modification by Teemu K
+        if (!canPickup) return;
+
         Debug.Log("Picking up cubeA");
         cubeRigidbody.isKinematic = true;
         cubeA.transform.SetParent(transform);
